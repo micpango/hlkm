@@ -25,13 +25,13 @@ module.exports = {
 		});
 		return Promise.resolve(result);
 	},
-	calculateRoadTime: function (data) {
+	/*calculateRoadTime: function (data) {
 		data.riders.filter(function (rider) {
 			return rider.road;
 		}).forEach(function (rider) {
 			rider.roadTime = data.road[rider.road]
 		});
-	},
+	},*/
 	calculateGC: function (result) {
 		if (result.tempo.completed) {
 			result.gc = {};

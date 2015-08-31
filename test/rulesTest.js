@@ -89,7 +89,7 @@ var tempoData = {
 	]
 }
 
-var roadData = {
+/*var roadData = {
 	road: {
 		"B": "01:30:40",
 		"P": "01:32:00",
@@ -120,4 +120,4 @@ var roadData = {
 			"name": "rider6"
 		}
 	]
-};
+};*/
