@@ -1,0 +1,23 @@
+{
+  "name": "hlkm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha $(find test -name '*.js') --watch --growl"
+  },
+  "author": "",
+  "private": true,
+  "dependencies": {
+    "bluebird": "2.3.11",
+    "express": "4.10.4",
+    "hogan-express": "0.5.2",
+    "logfmt": "0.21.0",
+    "request": "^2.51.0",
+    "serve-static": "1.7.1"
+  },
+  "devDependencies": {
+    "mocha": "^1.18.2",
+    "referee": "^1.0.3"
+  }
+}
