@@ -1,10 +1,46 @@
 var assert = require('referee').assert;
+var refute = require('referee').refute;
 
 var service = require('../src/rules.js');
 
 describe('Rules', function () {
 
-	describe('road', function () {
+	describe('tempo', function () {
+			
+		it('lists rider by finishing time', function (done) {
+			service.calculateTempo(tempoData).done(function (result) {
+				assert.equals(result.tempo.riders.length, 5);
+				assert.equals(result.tempo.riders[0].name, 'rider2');
+				assert.equals(result.tempo.riders[1].name, 'rider4');
+				assert.equals(result.tempo.riders[2].name, 'rider5');
+				done();
+			});
+		});
+
+		it('only calculate gc after tempo is finished', function (done) {
+			tempoData.tempo = false;
+			service.calculateTempo(tempoData).then(service.calculateGC)
+			.done(function (result) {
+				refute(result.gc);	
+				done();
+			});
+		});
+
+		it('calculates gc time based on top 3 after tempo finished', function (done) {
+			tempoData.tempo = true;
+			service.calculateTempo(tempoData).then(service.calculateGC)
+			.done(function (result) {
+				assert.equals(result.gc.riders[0].name, 'rider2');
+				assert.equals(result.gc.riders[0].time, '00:35:49');
+				assert.equals(result.gc.riders[1].time, '00:36:09');
+				assert.equals(result.gc.riders[2].time, '00:37:09');
+				assert.equals(result.gc.riders[3].time, '00:37:34');
+				done();	
+			});
+		});
+	});
+
+	/*describe('road', function () {
 
 		it('riders get time of finishing group', function () {
 			service.calculateRoadTime(roadData);
@@ -21,8 +57,37 @@ describe('Rules', function () {
 				return result.name === 'rider3';
 			})[0].roadTime, "01:30:40");
 		});
-	});
+	});*/
 });
+
+var tempoData = {
+	tempo: true,
+	riders: [
+		{
+			"name": "rider1",
+			"tempo": "00:38:19"
+		},
+		{
+			"name": "rider2",
+			"tempo": "00:36:19"
+		},
+		{
+			"name": "rider3",
+			"tempo": "00:37:34"
+		},
+		{
+			"name": "rider4",
+			"tempo": "00:36:29"
+		},
+		{
+			"name": "rider5",
+			"tempo": "00:37:19"
+		},
+		{
+			"name": "rider6"
+		}
+	]
+}
 
 var roadData = {
 	road: {
