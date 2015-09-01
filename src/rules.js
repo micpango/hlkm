@@ -23,11 +23,12 @@ module.exports = {
 				return rider.time;
 			}).sort(function (rider1, rider2) {
 				return moment.duration(rider1.time) - moment.duration(rider2.time);
-			}).map(function (rider, index) {
+			}).map(function (rider, index, riders) {
 				rider.position = index + 1;
 				if (index < 3) {
 					rider.bonus = tempoBonus(index)
 				}
+				rider.diff = (moment.duration(rider.time)).subtract(moment.duration(riders[0].time)).format('hh:mm:ss', { trim: false });
 				return rider;
 			});
 

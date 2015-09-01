@@ -29,6 +29,16 @@ describe('Rules', function () {
 			});
 		});
 
+		it('lists time diff from winner', function (done) {
+			data.tempo.completed = true;
+			service.calculateTempo(data.tempo).done(function (result) {
+				assert.equals(result.tempo.riders[0].diff, "00:00:00");
+				assert.equals(result.tempo.riders[1].diff, "00:00:10");
+				assert.equals(result.tempo.riders[2].diff, "00:01:00");
+				done();
+			});
+		});
+
 		it('leaves out riders without time', function (done) {
 			data.tempo.completed = true;
 			service.calculateTempo(data.tempo).done(function (result) {
