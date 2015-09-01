@@ -20,9 +20,9 @@ module.exports = {
 		var result = { tempo: { completed: data.completed } };
 		if (result.tempo.completed) {
 			result.tempo.riders = data.riders.filter(function (rider) {
-				return rider.tempo;
+				return rider.time;
 			}).sort(function (rider1, rider2) {
-				return moment.duration(rider1.tempo) - moment.duration(rider2.tempo);
+				return moment.duration(rider1.time) - moment.duration(rider2.time);
 			}).map(function (rider, index) {
 				rider.position = index + 1;
 				if (index < 3) {
@@ -48,7 +48,7 @@ module.exports = {
 				return {
 					position: index + 1,
 					name: rider.name,
-					time: (moment.duration(rider.tempo).subtract(moment.duration(rider.bonus))).format('hh:mm:ss', { trim: false })
+					time: (moment.duration(rider.time).subtract(moment.duration(rider.bonus))).format('hh:mm:ss', { trim: false })
 				}
 			}).map(function (rider, index, riders) {
 				rider.diff = (moment.duration(rider.time)).subtract(moment.duration(riders[0].time)).format('hh:mm:ss', { trim: false })

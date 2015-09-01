@@ -1,5 +1,6 @@
 var assert = require('referee').assert;
 var refute = require('referee').refute;
+var _ = require('lodash');
 
 var service = require('../src/rules.js');
 
@@ -24,6 +25,16 @@ describe('Rules', function () {
 				assert.equals(result.tempo.riders[1].name, 'rider4');
 				assert.equals(result.tempo.riders[2].name, 'rider5');
 				assert.equals(result.tempo.riders[2].position, 3);
+				done();
+			});
+		});
+
+		it('leaves out riders without time', function (done) {
+			data.tempo.completed = true;
+			service.calculateTempo(data.tempo).done(function (result) {
+				refute(_.includes(result.tempo.riders.map(function (rider) { 
+					return rider.name; 
+				}), 'rider6'));
 				done();
 			});
 		});
@@ -82,23 +93,23 @@ var data = {
 		"riders": [
 			{
 				"name": "rider1",
-				"tempo": "00:38:19"
+				"time": "00:38:19"
 			},
 			{
 				"name": "rider2",
-				"tempo": "00:36:19"
+				"time": "00:36:19"
 			},
 			{
 				"name": "rider3",
-				"tempo": "00:37:34"
+				"time": "00:37:34"
 			},
 			{
 				"name": "rider4",
-				"tempo": "00:36:29"
+				"time": "00:36:29"
 			},
 			{
 				"name": "rider5",
-				"tempo": "00:37:19"
+				"time": "00:37:19"
 			},
 			{
 				"name": "rider6"
