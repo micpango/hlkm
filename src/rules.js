@@ -44,12 +44,15 @@ module.exports = {
 	calculateGC: function (result) {
 		if (result.tempo.completed) {
 			result.gc = {};
-			result.gc.riders = result.tempo.riders.map(function (rider, index) {
+			result.gc.riders = result.tempo.riders.map(function (rider, index, riders) {
 				return {
 					position: index + 1,
 					name: rider.name,
 					time: (moment.duration(rider.tempo).subtract(moment.duration(rider.bonus))).format('hh:mm:ss', { trim: false })
 				}
+			}).map(function (rider, index, riders) {
+				rider.diff = (moment.duration(rider.time)).subtract(moment.duration(riders[0].time)).format('hh:mm:ss', { trim: false })
+				return rider;
 			});
 		}
 		return Promise.resolve(result);

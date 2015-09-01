@@ -44,10 +44,13 @@ describe('Rules', function () {
 				assert.equals(result.gc.riders[0].name, 'rider2');
 				assert.equals(result.gc.riders[0].position, 1);
 				assert.equals(result.gc.riders[0].time, '00:35:49');
+				assert.equals(result.gc.riders[0].diff, '00:00:00');
 				assert.equals(result.gc.riders[1].time, '00:36:09');
+				assert.equals(result.gc.riders[1].diff, '00:00:20');
 				assert.equals(result.gc.riders[2].time, '00:37:09');
 				assert.equals(result.gc.riders[2].position, 3);
 				assert.equals(result.gc.riders[3].time, '00:37:34');
+				assert.equals(result.gc.riders[3].diff, '00:01:45');
 				done();	
 			});
 		});
