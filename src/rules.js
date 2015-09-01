@@ -23,6 +23,12 @@ module.exports = {
 				return rider.tempo;
 			}).sort(function (rider1, rider2) {
 				return moment.duration(rider1.tempo) - moment.duration(rider2.tempo);
+			}).map(function (rider, index) {
+				rider.position = index + 1;
+				if (index < 3) {
+					rider.bonus = tempoBonus(index)
+				}
+				return rider;
 			});
 
 		}
@@ -40,8 +46,9 @@ module.exports = {
 			result.gc = {};
 			result.gc.riders = result.tempo.riders.map(function (rider, index) {
 				return {
+					position: index + 1,
 					name: rider.name,
-					time: (moment.duration(rider.tempo).subtract(moment.duration(tempoBonus(index)))).format('hh:mm:ss', { trim: false })
+					time: (moment.duration(rider.tempo).subtract(moment.duration(rider.bonus))).format('hh:mm:ss', { trim: false })
 				}
 			});
 		}

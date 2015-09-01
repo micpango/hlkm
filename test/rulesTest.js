@@ -20,8 +20,10 @@ describe('Rules', function () {
 			service.calculateTempo(data.tempo).done(function (result) {
 				assert.equals(result.tempo.riders.length, 5);
 				assert.equals(result.tempo.riders[0].name, 'rider2');
+				assert.equals(result.tempo.riders[0].position, 1);
 				assert.equals(result.tempo.riders[1].name, 'rider4');
 				assert.equals(result.tempo.riders[2].name, 'rider5');
+				assert.equals(result.tempo.riders[2].position, 3);
 				done();
 			});
 		});
@@ -40,9 +42,11 @@ describe('Rules', function () {
 			service.calculateTempo(data.tempo).then(service.calculateGC)
 			.done(function (result) {
 				assert.equals(result.gc.riders[0].name, 'rider2');
+				assert.equals(result.gc.riders[0].position, 1);
 				assert.equals(result.gc.riders[0].time, '00:35:49');
 				assert.equals(result.gc.riders[1].time, '00:36:09');
 				assert.equals(result.gc.riders[2].time, '00:37:09');
+				assert.equals(result.gc.riders[2].position, 3);
 				assert.equals(result.gc.riders[3].time, '00:37:34');
 				done();	
 			});

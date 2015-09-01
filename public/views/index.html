@@ -1,1 +1,71 @@
-YO!
+<!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KM-festival 2015</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<div class="row">
+	<div class="col-md-4">
+		<fieldset>
+			<legend>Tempo</legend>
+			{{#result.tempo.completed}}
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Plassering</th>
+						<th>Navn</th>
+						<th>Tid</th>
+						<th>Bonussekunder</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#result.tempo.riders}}
+						<tr>
+							<td>{{position}}</td>
+							<td>{{name}}</td>
+							<td>{{tempo}}</td>
+							{{#bonus}}
+							<td>- {{bonus}}</td>
+							{{/bonus}}
+							{{^bonus}}
+							<td></td>
+							{{/bonus}}
+						</tr>
+					{{/result.tempo.riders}}
+				</tbody>
+			</table>
+			{{/result.tempo.completed}}
+			{{^result.tempo.completed}}
+			<h3>Onsdag 17. september - kl 18:30</h3>
+			{{/result.tempo.completed}}
+		</fieldset>
+	</div>
+
+	<div class="col-md-4">
+		<fieldset>
+			<legend>Sammenlagt</legend>
+			{{#result.tempo.completed}}
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Plassering</th>
+						<th>Navn</th>
+						<th>Tid</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#result.gc.riders}}
+						<tr>
+							<td>{{position}}</td>
+							<td>{{name}}</td>
+							<td>{{time}}</td>
+						</tr>
+					{{/result.gc.riders}}
+				</tbody>
+			</table>
+			{{/result.tempo.completed}}
+			{{^result.tempo.completed}}
+			<h3>Onsdag 17. september - kl 18:30</h3>
+			{{/result.tempo.completed}}
+		</fieldset>
+	</div>
+</div>

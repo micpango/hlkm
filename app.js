@@ -23,13 +23,12 @@ app.engine('html', require('hogan-express'));
 app.get('/', function (req, res, next) {
 	gist.fetchAsync('88d99020ba186c05692d').then(function (gist) {
 		var data = JSON.parse(gist.files['hlkm15_test.json'].content);
-		rules.calculateTempo(data.tempo).then(function (result) {
-
-			res.render('index', result);
+		rules.calculateTempo(data.tempo)
+		.then(rules.calculateGC)
+		.then(function (result) {
+			res.render('index', { result: result });
 		});
 	});
-	//res.json()
-
 });
 
 var port = Number(process.env.PORT || 3000)
