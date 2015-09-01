@@ -17,7 +17,7 @@ function tempoBonus(position) {
 
 module.exports = {
 	calculateTempo: function (data) {
-		var result = { tempo: { completed: data.tempo } };
+		var result = { tempo: { completed: data.completed } };
 		result.tempo.riders = data.riders.filter(function (rider) {
 			return rider.tempo;
 		}).sort(function (rider1, rider2) {

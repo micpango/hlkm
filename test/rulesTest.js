@@ -8,7 +8,7 @@ describe('Rules', function () {
 	describe('tempo', function () {
 			
 		it('lists rider by finishing time', function (done) {
-			service.calculateTempo(tempoData).done(function (result) {
+			service.calculateTempo(data.tempo).done(function (result) {
 				assert.equals(result.tempo.riders.length, 5);
 				assert.equals(result.tempo.riders[0].name, 'rider2');
 				assert.equals(result.tempo.riders[1].name, 'rider4');
@@ -18,8 +18,8 @@ describe('Rules', function () {
 		});
 
 		it('only calculate gc after tempo is finished', function (done) {
-			tempoData.tempo = false;
-			service.calculateTempo(tempoData).then(service.calculateGC)
+			data.tempo.completed = false;
+			service.calculateTempo(data.tempo).then(service.calculateGC)
 			.done(function (result) {
 				refute(result.gc);	
 				done();
@@ -27,8 +27,8 @@ describe('Rules', function () {
 		});
 
 		it('calculates gc time based on top 3 after tempo finished', function (done) {
-			tempoData.tempo = true;
-			service.calculateTempo(tempoData).then(service.calculateGC)
+			data.tempo.completed = true;
+			service.calculateTempo(data.tempo).then(service.calculateGC)
 			.done(function (result) {
 				assert.equals(result.gc.riders[0].name, 'rider2');
 				assert.equals(result.gc.riders[0].time, '00:35:49');
@@ -60,33 +60,35 @@ describe('Rules', function () {
 	});*/
 });
 
-var tempoData = {
-	tempo: true,
-	riders: [
-		{
-			"name": "rider1",
-			"tempo": "00:38:19"
-		},
-		{
-			"name": "rider2",
-			"tempo": "00:36:19"
-		},
-		{
-			"name": "rider3",
-			"tempo": "00:37:34"
-		},
-		{
-			"name": "rider4",
-			"tempo": "00:36:29"
-		},
-		{
-			"name": "rider5",
-			"tempo": "00:37:19"
-		},
-		{
-			"name": "rider6"
-		}
-	]
+var data = {
+	"tempo": {
+		"completed": true,
+		"riders": [
+			{
+				"name": "rider1",
+				"tempo": "00:38:19"
+			},
+			{
+				"name": "rider2",
+				"tempo": "00:36:19"
+			},
+			{
+				"name": "rider3",
+				"tempo": "00:37:34"
+			},
+			{
+				"name": "rider4",
+				"tempo": "00:36:29"
+			},
+			{
+				"name": "rider5",
+				"tempo": "00:37:19"
+			},
+			{
+				"name": "rider6"
+			}
+		]
+	}
 }
 
 /*var roadData = {
