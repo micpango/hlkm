@@ -18,11 +18,14 @@ function tempoBonus(position) {
 module.exports = {
 	calculateTempo: function (data) {
 		var result = { tempo: { completed: data.completed } };
-		result.tempo.riders = data.riders.filter(function (rider) {
-			return rider.tempo;
-		}).sort(function (rider1, rider2) {
-			return moment.duration(rider1.tempo) - moment.duration(rider2.tempo);
-		});
+		if (result.tempo.completed) {
+			result.tempo.riders = data.riders.filter(function (rider) {
+				return rider.tempo;
+			}).sort(function (rider1, rider2) {
+				return moment.duration(rider1.tempo) - moment.duration(rider2.tempo);
+			});
+
+		}
 		return Promise.resolve(result);
 	},
 	/*calculateRoadTime: function (data) {

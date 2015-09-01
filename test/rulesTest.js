@@ -7,7 +7,16 @@ describe('Rules', function () {
 
 	describe('tempo', function () {
 			
+		it('returns empty list when tempo is not completed', function (done) {
+			data.tempo.completed = false;
+			service.calculateTempo(data.tempo).done(function (result) {
+				refute(result.tempo.riders);
+				done();
+			});
+		});
+
 		it('lists rider by finishing time', function (done) {
+			data.tempo.completed = true;
 			service.calculateTempo(data.tempo).done(function (result) {
 				assert.equals(result.tempo.riders.length, 5);
 				assert.equals(result.tempo.riders[0].name, 'rider2');

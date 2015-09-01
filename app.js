@@ -1,13 +1,17 @@
 var express = require ('express');
 var logfmt = require('logfmt');
 
+var Promise = require('bluebird');
+
 var app = express();
 var serveStatic = require('serve-static');
 
 var Gisty = require('gisty');
-var gist = new Gisty({
+var gist = Promise.promisifyAll(new Gisty({
 	username: 'micpango'
-});
+}));
+
+var rules = require('./src/rules.js');
 
 app.use(logfmt.requestLogger());
 app.use(serveStatic(__dirname + '/public'));
@@ -17,11 +21,15 @@ app.set('view engine', 'html');
 app.engine('html', require('hogan-express'));
 
 app.get('/', function (req, res, next) {
-	gist.fetch('88d99020ba186c05692d', function (error, gist) {
-		console.log('DEBUG : ' + JSON.stringify(gist.files['hlkm15_test.json'].content)); // TODO michael: remove
+	gist.fetchAsync('88d99020ba186c05692d').then(function (gist) {
+		var data = JSON.parse(gist.files['hlkm15_test.json'].content);
+		rules.calculateTempo(data.tempo).then(function (result) {
+
+			res.render('index', result);
+		});
 	});
 	//res.json()
-    res.render('index');
+
 });
 
 var port = Number(process.env.PORT || 3000)
