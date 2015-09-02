@@ -17,7 +17,7 @@ function tempoBonus(position) {
 
 module.exports = {
 	calculateTempo: function (data) {
-		var result = { tempo: { completed: data.completed } };
+		var result = { tempo: { completed: data.completed }};
 		if (result.tempo.completed) {
 			result.tempo.riders = data.riders.filter(function (rider) {
 				return rider.time;
@@ -35,13 +35,24 @@ module.exports = {
 		}
 		return Promise.resolve(result);
 	},
-	/*calculateRoadTime: function (data) {
-		data.riders.filter(function (rider) {
+	calculateRoad: function (data) {
+		var result = { road: { completed: data.completed }};
+		if (result.road.completed) {
+			result.road.riders = data.riders.filter(function (rider) {
+				return rider.group;
+			}).map(function (rider) {
+				rider.time = data.groups[rider.group];
+				return rider;
+			});
+		}
+
+		/*data.riders.filter(function (rider) {
 			return rider.road;
 		}).forEach(function (rider) {
 			rider.roadTime = data.road[rider.road]
-		});
-	},*/
+		});*/
+		return Promise.resolve(result);
+	},
 	calculateGC: function (result) {
 		if (result.tempo.completed) {
 			result.gc = {};

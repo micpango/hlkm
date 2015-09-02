@@ -29,6 +29,16 @@ describe('Rules', function () {
 			});
 		});
 
+		it('top three gets bonus seconds', function (done) {
+			data.tempo.completed = true;
+			service.calculateTempo(data.tempo).done(function (result) {
+				assert.equals(result.tempo.riders[0].bonus, "00:00:30");
+				assert.equals(result.tempo.riders[1].bonus, "00:00:20");
+				assert.equals(result.tempo.riders[2].bonus, "00:00:10");
+				done();
+			});
+		});
+
 		it('lists time diff from winner', function (done) {
 			data.tempo.completed = true;
 			service.calculateTempo(data.tempo).done(function (result) {
@@ -77,24 +87,40 @@ describe('Rules', function () {
 		});
 	});
 
-	/*describe('road', function () {
+	describe('road', function () {
 
-		it('riders get time of finishing group', function () {
-			service.calculateRoadTime(roadData);
-			assert.equals(roadData.riders.filter(function (rider) {
-				return rider.roadTime;
-			}).length, 5);
-			assert.equals(roadData.riders.filter(function (result) {
-				return result.name === 'rider1';
-			})[0].roadTime, "01:36:12");
-			assert.equals(roadData.riders.filter(function (result) {
-				return result.name === 'rider2';
-			})[0].roadTime, "01:32:00");
-			assert.equals(roadData.riders.filter(function (result) {
-				return result.name === 'rider3';
-			})[0].roadTime, "01:30:40");
+		it('returns empty list when road not completed', function (done) {
+			data.road.completed = false;
+			service.calculateRoad(data.road).done(function (result) {
+				refute(result.road.riders);
+				done();
+			});
 		});
-	});*/
+
+		it('riders get time of finishing group', function (done) {
+			data.road.completed = true;
+
+			service.calculateRoad(data.road).done(function (result) {
+				assert.equals(result.road.riders.length, 5);
+				assert.equals(result.road.riders.filter(function (result) {
+					return result.name === 'rider1';
+				})[0].time, "01:36:12");
+				assert.equals(result.road.riders.filter(function (result) {
+					return result.name === 'rider2';
+				})[0].time, "01:32:00");
+				assert.equals(result.road.riders.filter(function (result) {
+					return result.name === 'rider3';
+				})[0].time, "01:30:40");
+				done();
+			});
+		});
+
+		xit('top three');
+		xit('bonus road');
+		xit('bonus sprint');
+		xit('gc all');
+		xit('gc not all')
+	});
 });
 
 var data = {
@@ -125,38 +151,39 @@ var data = {
 				"name": "rider6"
 			}
 		]
-	}
-}
-
-/*var roadData = {
-	road: {
-		"B": "01:30:40",
-		"P": "01:32:00",
-		"G": "01:36:12"
 	},
-	riders: [
-		{
-			"name": "rider1",
-			"road": "G"
+	"road": {
+		"completed": true,
+		"groups": {
+			"B": "01:30:40",
+			"P": "01:32:00",
+			"G": "01:36:12"
 		},
-		{
-			"name": "rider2",
-			"road": "P"
-		},
-		{
-			"name": "rider3",
-			"road": "B"
-		},
-		{
-			"name": "rider4",
-			"road": "B"
-		},
-		{
-			"name": "rider5",
-			"road": "P"
-		},
-		{
-			"name": "rider6"
-		}
-	]
-};*/
+		"riders": [
+			{
+				"name": "rider1",
+				"group": "G"
+			},
+			{
+				"name": "rider2",
+				"group": "P"
+			},
+			{
+				"name": "rider3",
+				"group": "B"
+			},
+			{
+				"name": "rider4",
+				"group": "B"
+			},
+			{
+				"name": "rider5",
+				"group": "P"
+			},
+			{
+				"name": "rider6"
+			}
+		]
+
+	}
+};
