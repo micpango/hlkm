@@ -115,6 +115,16 @@ describe('Rules', function () {
 			});
 		});
 
+		it('leaves out riders without time', function (done) {
+			data.road.completed = true;
+			service.calculateRoad(data.road).done(function (result) {
+				refute(_.includes(result.road.riders.map(function (rider) { 
+					return rider.name; 
+				}), 'rider7'));
+				done();
+			});
+		});
+
 		xit('top three');
 		xit('bonus road');
 		xit('bonus sprint');
@@ -181,7 +191,7 @@ var data = {
 				"group": "P"
 			},
 			{
-				"name": "rider6"
+				"name": "rider7"
 			}
 		]
 
