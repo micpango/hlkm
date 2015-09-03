@@ -10,7 +10,7 @@ describe('Rules', function () {
 			
 		it('returns empty list when tempo is not completed', function (done) {
 			data.tempo.completed = false;
-			service.calculateTempo(data.tempo).done(function (result) {
+			service.calculateTempo(data).done(function (result) {
 				refute(result.tempo.riders);
 				done();
 			});
@@ -18,7 +18,7 @@ describe('Rules', function () {
 
 		it('lists rider by finishing time', function (done) {
 			data.tempo.completed = true;
-			service.calculateTempo(data.tempo).done(function (result) {
+			service.calculateTempo(data).done(function (result) {
 				assert.equals(result.tempo.riders.length, 6);
 				assert.equals(result.tempo.riders[0].name, 'rider2');
 				assert.equals(result.tempo.riders[0].position, 1);
@@ -31,7 +31,7 @@ describe('Rules', function () {
 
 		it('top three get bonus seconds', function (done) {
 			data.tempo.completed = true;
-			service.calculateTempo(data.tempo).done(function (result) {
+			service.calculateTempo(data).done(function (result) {
 				assert.equals(result.tempo.riders[0].bonus, "00:00:30");
 				assert.equals(result.tempo.riders[1].bonus, "00:00:20");
 				assert.equals(result.tempo.riders[2].bonus, "00:00:10");
@@ -42,7 +42,7 @@ describe('Rules', function () {
 
 		it('lists time diff from winner', function (done) {
 			data.tempo.completed = true;
-			service.calculateTempo(data.tempo).done(function (result) {
+			service.calculateTempo(data).done(function (result) {
 				assert.equals(result.tempo.riders[0].diff, "00:00:00");
 				assert.equals(result.tempo.riders[1].diff, "00:00:10");
 				assert.equals(result.tempo.riders[2].diff, "00:01:00");
@@ -52,7 +52,7 @@ describe('Rules', function () {
 
 		it('leaves out riders without time', function (done) {
 			data.tempo.completed = true;
-			service.calculateTempo(data.tempo).done(function (result) {
+			service.calculateTempo(data).done(function (result) {
 				refute(_.includes(result.tempo.riders.map(function (rider) { 
 					return rider.name; 
 				}), 'rider6'));
@@ -62,7 +62,7 @@ describe('Rules', function () {
 
 		it('only calculate gc after tempo is finished', function (done) {
 			data.tempo.completed = false;
-			service.calculateTempo(data.tempo).then(service.calculateGC)
+			service.calculateTempo(data).then(service.calculateGC)
 			.done(function (result) {
 				refute(result.gc);	
 				done();
@@ -71,7 +71,7 @@ describe('Rules', function () {
 
 		it('calculates gc time based on top 3 after tempo finished', function (done) {
 			data.tempo.completed = true;
-			service.calculateTempo(data.tempo).then(service.calculateGC)
+			service.calculateTempo(data).then(service.calculateGC)
 			.done(function (result) {
 				assert.equals(result.gc.riders[0].name, 'rider2');
 				assert.equals(result.gc.riders[0].position, 1);
@@ -92,7 +92,7 @@ describe('Rules', function () {
 
 		it('returns empty list when road not completed', function (done) {
 			data.road.completed = false;
-			service.calculateRoad(data.road).done(function (result) {
+			service.calculateRoad(data).done(function (result) {
 				refute(result.road.riders);
 				done();
 			});
@@ -101,7 +101,7 @@ describe('Rules', function () {
 		it('riders get time of finishing group', function (done) {
 			data.road.completed = true;
 
-			service.calculateRoad(data.road).done(function (result) {
+			service.calculateRoad(data).done(function (result) {
 				assert.equals(result.road.riders.length, 5);
 				assert.equals(result.road.riders.filter(function (result) {
 					return result.name === 'rider1';
@@ -118,7 +118,7 @@ describe('Rules', function () {
 
 		it('leaves out riders without time', function (done) {
 			data.road.completed = true;
-			service.calculateRoad(data.road).done(function (result) {
+			service.calculateRoad(data).done(function (result) {
 				refute(_.includes(result.road.riders.map(function (rider) { 
 					return rider.name; 
 				}), 'rider7'));
@@ -128,17 +128,20 @@ describe('Rules', function () {
 
 		it('top three', function (done) {
 			data.road.completed = true;
-			service.calculateRoad(data.road).done(function (result) {
+			service.calculateRoad(data).done(function (result) {
 				assert.equals(result.road.riders[0].name, 'rider4');
+				assert.equals(result.road.riders[0].position, 1);
 				assert.equals(result.road.riders[1].name, 'rider3');
+				assert.equals(result.road.riders[1].position, 2);
 				assert.equals(result.road.riders[2].name, 'rider5');
+				assert.equals(result.road.riders[2].position, 3);
 				done();
 			});
 		});
 
 		it('lists by position, and finishing time', function (done) {
 			data.road.completed = true;
-			service.calculateRoad(data.road).done(function (result) {
+			service.calculateRoad(data).done(function (result) {
 				assert.equals(result.road.riders[0].time, '01:30:40');
 				assert.equals(result.road.riders[1].time, '01:30:40');
 				assert.equals(result.road.riders[2].time, '01:32:00');
@@ -150,7 +153,7 @@ describe('Rules', function () {
 
 		it('lists time diff from winner', function (done) {
 			data.road.completed = true;
-			service.calculateRoad(data.road).done(function (result) {
+			service.calculateRoad(data).done(function (result) {
 				assert.equals(result.road.riders[0].diff, "00:00:00");
 				assert.equals(result.road.riders[1].diff, "00:00:00");
 				assert.equals(result.road.riders[2].diff, "00:01:20");
@@ -160,7 +163,7 @@ describe('Rules', function () {
 
 		it('top three finishers get bonus seconds', function (done) {
 			data.road.completed = true;
-			service.calculateRoad(data.road).done(function (result) {
+			service.calculateRoad(data).done(function (result) {
 				assert.equals(result.road.riders[0].bonus, "00:00:20");
 				assert.equals(result.road.riders[1].bonus, "00:00:15");
 				assert.equals(result.road.riders[2].bonus, "00:00:10");
@@ -171,7 +174,7 @@ describe('Rules', function () {
 
 		it('top three sprinters get bonus sprint', function (done) {
 			data.road.completed = true;
-			service.calculateRoad(data.road).done(function (result) {
+			service.calculateRoad(data).done(function (result) {
 				var sortedBySprint = result.road.riders.sort(function (rider1, rider2) {
 					return rider1.sprintPosition - rider2.sprintPosition || 4;
 				});

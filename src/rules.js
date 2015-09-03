@@ -41,9 +41,10 @@ function sprintBonus(position) {
 
 module.exports = {
 	calculateTempo: function (data) {
-		var result = { tempo: { completed: data.completed }};
+		var result = _.cloneDeep(data);
+		result.tempo = { completed: data.tempo.completed };
 		if (result.tempo.completed) {
-			result.tempo.riders = data.riders.filter(function (rider) {
+			result.tempo.riders = data.tempo.riders.filter(function (rider) {
 				return rider.time;
 			}).sort(function (rider1, rider2) {
 				return moment.duration(rider1.time) - moment.duration(rider2.time);
@@ -60,17 +61,18 @@ module.exports = {
 		return Promise.resolve(result);
 	},
 	calculateRoad: function (data) {
-		var result = { road: { completed: data.completed }};
+		var result = _.cloneDeep(data);
+		result.road = { completed: data.road.completed };
 		if (result.road.completed) {
-			result.road.riders = data.riders.filter(function (rider) {
+			result.road.riders = data.road.riders.filter(function (rider) {
 				return rider.group;
 			}).sort(function (rider1, rider2) {
 				return rider1.position - rider2.position || 4;
 			}).map(function (rider) {
-				rider.time = data.groups[rider.group];
+				rider.time = data.road.groups[rider.group];
 				return rider;
 			}).sort(function (rider1, rider2) {
-				return moment.duration(rider1.time) - moment.duration(rider2.time);
+				return moment.duration(rider1.time) - moment.duration(rider2.time);		
 			}).map(function (rider, index, riders) {
 				if (index < 3) {
 					rider.bonus = roadBonus(index);

@@ -26,6 +26,35 @@
 <div class="wide"><span class="title">KM-festival 2015</span></div>
 <div class="container">
 	<div class="row">
+
+		{{#result.tempo.completed}}
+		<div class="col-md-6">
+			<fieldset>
+				<legend>Sammenlagt</legend>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Plassering</th>
+							<th>Navn</th>
+							<th>Tid</th>
+							<th>Tid etter</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{#result.gc.riders}}
+							<tr>
+								<td>{{position}}</td>
+								<td>{{name}}</td>
+								<td>{{time}}</td>
+								<td>{{diff}}</td>
+							</tr>
+						{{/result.gc.riders}}
+					</tbody>
+				</table>
+			</fieldset>
+		</div>
+		{{/result.tempo.completed}}
+
 		<div class="col-md-6">
 			<fieldset>
 				<legend>Tempo</legend>
@@ -59,15 +88,15 @@
 				</table>
 				{{/result.tempo.completed}}
 				{{^result.tempo.completed}}
-				<h3>Onsdag 17. september - kl 18:30</h3>
+				<h3>Torsdag 17. september - kl 18:30</h3>
 				{{/result.tempo.completed}}
 			</fieldset>
 		</div>
 
 		<div class="col-md-6">
 			<fieldset>
-				<legend>Sammenlagt</legend>
-				{{#result.tempo.completed}}
+				<legend>Fellesstart</legend>
+				{{#result.road.completed}}
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -75,24 +104,39 @@
 							<th>Navn</th>
 							<th>Tid</th>
 							<th>Tid etter</th>
+							<th>Bonussekunder</th>
+							<th>Sprint bonussekunder</th>
 						</tr>
 					</thead>
 					<tbody>
-						{{#result.gc.riders}}
+						{{#result.road.riders}}
 							<tr>
 								<td>{{position}}</td>
 								<td>{{name}}</td>
 								<td>{{time}}</td>
 								<td>{{diff}}</td>
+								{{#bonus}}
+								<td>- {{bonus}}</td>
+								{{/bonus}}
+								{{^bonus}}
+								<td></td>
+								{{/bonus}}
+								{{#sprintBonus}}
+								<td>- {{sprintBonus}}</td>
+								{{/sprintBonus}}
+								{{^sprintBonus}}
+								<td></td>
+								{{/sprintBonus}}
 							</tr>
-						{{/result.gc.riders}}
+						{{/result.road.riders}}
 					</tbody>
 				</table>
-				{{/result.tempo.completed}}
-				{{^result.tempo.completed}}
-				<h3>Onsdag 17. september - kl 18:30</h3>
-				{{/result.tempo.completed}}
+				{{/result.road.completed}}
+				{{^result.road.completed}}
+				<h3>Lørdag 19. september - kl 10:00</h3>
+				{{/result.road.completed}}
 			</fieldset>
 		</div>
+
 	</div>
 </div>

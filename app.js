@@ -23,7 +23,8 @@ app.engine('html', require('hogan-express'));
 app.get('/', function (req, res, next) {
 	gist.fetchAsync('88d99020ba186c05692d').then(function (gist) {
 		var data = JSON.parse(gist.files['hlkm15_test.json'].content);
-		rules.calculateTempo(data.tempo)
+		rules.calculateTempo(data)
+		.then(rules.calculateRoad)
 		.then(rules.calculateGC)
 		.then(function (result) {
 			res.render('index', { result: result });
