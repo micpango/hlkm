@@ -19,7 +19,7 @@ describe('Rules', function () {
 		it('lists rider by finishing time', function (done) {
 			data.tempo.completed = true;
 			service.calculateTempo(data.tempo).done(function (result) {
-				assert.equals(result.tempo.riders.length, 5);
+				assert.equals(result.tempo.riders.length, 6);
 				assert.equals(result.tempo.riders[0].name, 'rider2');
 				assert.equals(result.tempo.riders[0].position, 1);
 				assert.equals(result.tempo.riders[1].name, 'rider4');
@@ -29,12 +29,13 @@ describe('Rules', function () {
 			});
 		});
 
-		it('top three gets bonus seconds', function (done) {
+		it('top three get bonus seconds', function (done) {
 			data.tempo.completed = true;
 			service.calculateTempo(data.tempo).done(function (result) {
 				assert.equals(result.tempo.riders[0].bonus, "00:00:30");
 				assert.equals(result.tempo.riders[1].bonus, "00:00:20");
 				assert.equals(result.tempo.riders[2].bonus, "00:00:10");
+				refute(result.tempo.riders[3].bonus);
 				done();
 			});
 		});
@@ -125,9 +126,62 @@ describe('Rules', function () {
 			});
 		});
 
-		xit('top three');
-		xit('bonus road');
-		xit('bonus sprint');
+		it('top three', function (done) {
+			data.road.completed = true;
+			service.calculateRoad(data.road).done(function (result) {
+				assert.equals(result.road.riders[0].name, 'rider4');
+				assert.equals(result.road.riders[1].name, 'rider3');
+				assert.equals(result.road.riders[2].name, 'rider5');
+				done();
+			});
+		});
+
+		it('lists by position, and finishing time', function (done) {
+			data.road.completed = true;
+			service.calculateRoad(data.road).done(function (result) {
+				assert.equals(result.road.riders[0].time, '01:30:40');
+				assert.equals(result.road.riders[1].time, '01:30:40');
+				assert.equals(result.road.riders[2].time, '01:32:00');
+				assert.equals(result.road.riders[3].time, '01:32:00');
+				assert.equals(result.road.riders[4].time, '01:36:12');
+				done();
+			});
+		});
+
+		it('lists time diff from winner', function (done) {
+			data.road.completed = true;
+			service.calculateRoad(data.road).done(function (result) {
+				assert.equals(result.road.riders[0].diff, "00:00:00");
+				assert.equals(result.road.riders[1].diff, "00:00:00");
+				assert.equals(result.road.riders[2].diff, "00:01:20");
+				done();
+			});
+		});
+
+		it('top three finishers get bonus seconds', function (done) {
+			data.road.completed = true;
+			service.calculateRoad(data.road).done(function (result) {
+				assert.equals(result.road.riders[0].bonus, "00:00:20");
+				assert.equals(result.road.riders[1].bonus, "00:00:15");
+				assert.equals(result.road.riders[2].bonus, "00:00:10");
+				refute(result.road.riders[3].bonus);
+				done();
+			});
+		});
+
+		it('top three sprinters get bonus sprint', function (done) {
+			data.road.completed = true;
+			service.calculateRoad(data.road).done(function (result) {
+				var sortedBySprint = result.road.riders.sort(function (rider1, rider2) {
+					return rider1.sprintPosition - rider2.sprintPosition || 4;
+				});
+				assert.equals(sortedBySprint[0].sprintBonus, "00:00:15");
+				assert.equals(sortedBySprint[1].sprintBonus, "00:00:10");
+				assert.equals(sortedBySprint[2].sprintBonus, "00:00:05");
+				refute(sortedBySprint[3].sprintBonus);
+				done();
+			});
+		});
 		xit('gc all');
 		xit('gc not all')
 	});
@@ -158,6 +212,10 @@ var data = {
 				"time": "00:37:19"
 			},
 			{
+				"name": "rider7",
+				"time": "00:40:00"
+			},
+			{
 				"name": "rider6"
 			}
 		]
@@ -172,23 +230,30 @@ var data = {
 		"riders": [
 			{
 				"name": "rider1",
-				"group": "G"
+				"group": "G",
+				"sprintPosition": 1
+
 			},
 			{
 				"name": "rider2",
-				"group": "P"
+				"group": "P",
+				"sprintPosition": 2
 			},
 			{
 				"name": "rider3",
-				"group": "B"
+				"group": "B",
+				"position": 2
 			},
 			{
 				"name": "rider4",
-				"group": "B"
+				"group": "B",
+				"position": 1
 			},
 			{
 				"name": "rider5",
-				"group": "P"
+				"group": "P",
+				"position": 3,
+				"sprintPosition": 3
 			},
 			{
 				"name": "rider7"

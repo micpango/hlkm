@@ -15,6 +15,30 @@ function tempoBonus(position) {
 	}
 }
 
+function roadBonus(position) {
+	if (position === 0) {
+		return '00:00:20';
+	} else if (position === 1) {
+		return '00:00:15';
+	} else if (position === 2) {
+		return '00:00:10';
+	} else {
+		return '00:00:00';
+	}
+}
+
+function sprintBonus(position) {
+	if (position === 1) {
+		return '00:00:15';
+	} else if (position === 2) {
+		return '00:00:10';
+	} else if (position === 3) {
+		return '00:00:05';
+	} else {
+		return '00:00:00';
+	}
+}
+
 module.exports = {
 	calculateTempo: function (data) {
 		var result = { tempo: { completed: data.completed }};
@@ -40,17 +64,25 @@ module.exports = {
 		if (result.road.completed) {
 			result.road.riders = data.riders.filter(function (rider) {
 				return rider.group;
+			}).sort(function (rider1, rider2) {
+				return rider1.position - rider2.position || 4;
 			}).map(function (rider) {
 				rider.time = data.groups[rider.group];
+				return rider;
+			}).sort(function (rider1, rider2) {
+				return moment.duration(rider1.time) - moment.duration(rider2.time);
+			}).map(function (rider, index, riders) {
+				if (index < 3) {
+					rider.bonus = roadBonus(index);
+				}
+				if (rider.sprintPosition) {
+					rider.sprintBonus = sprintBonus(rider.sprintPosition);
+				}
+				rider.diff = (moment.duration(rider.time)).subtract(moment.duration(riders[0].time)).format('hh:mm:ss', { trim: false });
 				return rider;
 			});
 		}
 
-		/*data.riders.filter(function (rider) {
-			return rider.road;
-		}).forEach(function (rider) {
-			rider.roadTime = data.road[rider.road]
-		});*/
 		return Promise.resolve(result);
 	},
 	calculateGC: function (result) {
