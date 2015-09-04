@@ -60,32 +60,6 @@ describe('Rules', function () {
 			});
 		});
 
-		it('only calculate gc after tempo is finished', function (done) {
-			data.tempo.completed = false;
-			service.calculateTempo(data).then(service.calculateGC)
-			.done(function (result) {
-				refute(result.gc);	
-				done();
-			});
-		});
-
-		it('calculates gc time based on top 3 after tempo finished', function (done) {
-			data.tempo.completed = true;
-			service.calculateTempo(data).then(service.calculateGC)
-			.done(function (result) {
-				assert.equals(result.gc.riders[0].name, 'rider2');
-				assert.equals(result.gc.riders[0].position, 1);
-				assert.equals(result.gc.riders[0].time, '00:35:49');
-				assert.equals(result.gc.riders[0].diff, '00:00:00');
-				assert.equals(result.gc.riders[1].time, '00:36:09');
-				assert.equals(result.gc.riders[1].diff, '00:00:20');
-				assert.equals(result.gc.riders[2].time, '00:37:09');
-				assert.equals(result.gc.riders[2].position, 3);
-				assert.equals(result.gc.riders[3].time, '00:37:34');
-				assert.equals(result.gc.riders[3].diff, '00:01:45');
-				done();	
-			});
-		});
 	});
 
 	describe('road', function () {
@@ -102,7 +76,7 @@ describe('Rules', function () {
 			data.road.completed = true;
 
 			service.calculateRoad(data).done(function (result) {
-				assert.equals(result.road.riders.length, 5);
+				assert.equals(result.road.riders.length, 6);
 				assert.equals(result.road.riders.filter(function (result) {
 					return result.name === 'rider1';
 				})[0].time, "01:36:12");
@@ -175,18 +149,65 @@ describe('Rules', function () {
 		it('top three sprinters get bonus sprint', function (done) {
 			data.road.completed = true;
 			service.calculateRoad(data).done(function (result) {
-				var sortedBySprint = result.road.riders.sort(function (rider1, rider2) {
-					return rider1.sprintPosition - rider2.sprintPosition || 4;
+				var withBonus = result.road.riders.filter(function (rider) {
+					return rider.sprintBonus;
+				}).sort(function (rider1, rider2) {
+					return rider1.sprintPosition - rider2.sprintPosition;
 				});
-				assert.equals(sortedBySprint[0].sprintBonus, "00:00:15");
-				assert.equals(sortedBySprint[1].sprintBonus, "00:00:10");
-				assert.equals(sortedBySprint[2].sprintBonus, "00:00:05");
-				refute(sortedBySprint[3].sprintBonus);
+				assert.equals(withBonus.length, 3);
+				assert.equals(withBonus[0].sprintBonus, "00:00:15");
+				assert.equals(withBonus[1].sprintBonus, "00:00:10");
+				assert.equals(withBonus[2].sprintBonus, "00:00:05");
 				done();
 			});
 		});
-		xit('gc all');
-		xit('gc not all')
+	});
+
+	describe('gc', function () {
+	
+		it('only calculate gc after tempo is finished', function (done) {
+			data.tempo.completed = false;
+			service.calculateTempo(data).then(service.calculateGC)
+			.done(function (result) {
+				refute(result.gc);	
+				done();
+			});
+		});
+
+		it('calculates gc time based on top 3 after tempo finished', function (done) {
+			data.tempo.completed = true;
+			service.calculateTempo(data).then(service.calculateGC)
+			.done(function (result) {
+				assert.equals(result.gc.riders[0].name, 'rider2');
+				assert.equals(result.gc.riders[0].position, 1);
+				assert.equals(result.gc.riders[0].time, '00:35:49');
+				assert.equals(result.gc.riders[0].diff, '00:00:00');
+				assert.equals(result.gc.riders[1].time, '00:36:09');
+				assert.equals(result.gc.riders[1].diff, '00:00:20');
+				assert.equals(result.gc.riders[2].time, '00:37:09');
+				assert.equals(result.gc.riders[2].position, 3);
+				assert.equals(result.gc.riders[3].time, '00:37:34');
+				assert.equals(result.gc.riders[3].diff, '00:01:45');
+				done();	
+			});
+		});
+		
+		it('leaves out riders not participating in both events when both events completed', function (done) {
+			data.road.completed = true;
+			service.calculateTempo(data).then(service.calculateRoad).then(service.calculateGC).done(function (result) {
+				refute(_.includes(result.gc.riders.map(function (rider) { 
+					return rider.name; 
+				}), 'rider6'));
+				refute(_.includes(result.gc.riders.map(function (rider) { 
+					return rider.name; 
+				}), 'rider7'));
+				done();
+			});
+		});
+
+		xit('calculates gc time with both events', function (done) {
+			done();
+		});
 	});
 });
 
@@ -257,6 +278,10 @@ var data = {
 				"group": "P",
 				"position": 3,
 				"sprintPosition": 3
+			},
+			{
+				"name": "rider6",
+				"group": "G"
 			},
 			{
 				"name": "rider7"
