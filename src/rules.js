@@ -101,6 +101,27 @@ module.exports = {
 				return rider;
 			});
 		}
+		if (result.road.completed) {
+			var roadRiders = _.groupBy(result.road.riders, function (rider) {
+				return rider.name;
+			});
+			result.gc.riders = result.gc.riders.filter(function (rider) {
+				return roadRiders[rider.name];
+			}).map(function (rider) {
+				var roadRider = roadRiders[rider.name][0];
+				rider.time = (moment.duration(rider.time))
+								.add(moment.duration(roadRider.time))
+								.subtract(moment.duration(roadRider.sprintBonus))
+								.subtract(moment.duration(roadRider.bonus)).format('hh:mm:ss', { trim: false });
+				return rider;
+			}).sort(function (rider1, rider2) {
+				return moment.duration(rider1.time) - moment.duration(rider2.time);
+			}).map(function (rider, index, riders) {
+				rider.position = index + 1;
+				rider.diff = (moment.duration(rider.time)).subtract(moment.duration(riders[0].time)).format('hh:mm:ss', { trim: false });
+				return rider;
+			});
+		}
 		return Promise.resolve(result);
 	}
 }

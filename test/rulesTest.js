@@ -167,6 +167,7 @@ describe('Rules', function () {
 	
 		it('only calculate gc after tempo is finished', function (done) {
 			data.tempo.completed = false;
+			data.road.completed = false;
 			service.calculateTempo(data).then(service.calculateGC)
 			.done(function (result) {
 				refute(result.gc);	
@@ -193,6 +194,7 @@ describe('Rules', function () {
 		});
 		
 		it('leaves out riders not participating in both events when both events completed', function (done) {
+			data.tempo.competed = true;
 			data.road.completed = true;
 			service.calculateTempo(data).then(service.calculateRoad).then(service.calculateGC).done(function (result) {
 				refute(_.includes(result.gc.riders.map(function (rider) { 
@@ -205,15 +207,28 @@ describe('Rules', function () {
 			});
 		});
 
-		xit('calculates gc time with both events', function (done) {
-			done();
+		it('calculates gc time with both events', function (done) {
+			data.tempo.completed = true;
+			data.road.completed = true;
+			service.calculateTempo(data).then(service.calculateRoad).then(service.calculateGC).done(function (result) {
+				assert.equals(result.gc.riders[0].name, 'rider4');
+				assert.equals(result.gc.riders[0].position, 1);
+				assert.equals(result.gc.riders[0].time, '02:06:29');
+				assert.equals(result.gc.riders[0].diff, '00:00:00');
+				assert.equals(result.gc.riders[1].time, '02:07:39');
+				assert.equals(result.gc.riders[1].diff, '00:01:10');
+				assert.equals(result.gc.riders[2].time, '02:07:59');
+				assert.equals(result.gc.riders[2].diff, '00:01:30');
+				assert.equals(result.gc.riders[2].position, 3);
+				done();
+			});
 		});
 	});
 });
 
 var data = {
 	"tempo": {
-		"completed": true,
+		"completed": false,
 		"riders": [
 			{
 				"name": "rider1",
@@ -245,7 +260,7 @@ var data = {
 		]
 	},
 	"road": {
-		"completed": true,
+		"completed": false,
 		"groups": {
 			"B": "01:30:40",
 			"P": "01:32:00",
