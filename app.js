@@ -21,8 +21,8 @@ app.set('view engine', 'html');
 app.engine('html', require('hogan-express'));
 
 app.get('/', function (req, res, next) {
-	gist.fetchAsync('88d99020ba186c05692d').then(function (gist) {
-		var data = JSON.parse(gist.files['hlkm15_test.json'].content);
+	gist.fetchAsync('565d6351635d2e755fa4').then(function (gist) {
+		var data = JSON.parse(gist.files['hlkm15.json'].content);
 		rules.calculateTempo(data)
 		.then(rules.calculateRoad)
 		.then(rules.calculateGC)
